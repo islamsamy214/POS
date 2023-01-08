@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index()
     {
-        return User::latest()->paginate(10);
+        return User::with('roles')->latest()->paginate(12);
     } //end of index
 
 
@@ -37,7 +37,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return response()->json(['user' => $user, 'roles' => Role::get()]);
+        $user->role = $user->getRoles();
+        return $user;
     } //end of edit
 
 
