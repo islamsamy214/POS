@@ -25,12 +25,12 @@
             <router-link
               :to="{ name: 'products-create' }"
               class="btn btn-light mx-3"
-              v-if="$store.state.user.role[0] === 'admin'"
+              v-if="$store.state.user != null && $store.state.user.role[0] === 'admin'"
               ><icon icon="material-symbols:add-box-outline-rounded"></icon> Add
               New</router-link
             >
             <router-link :to="{ name: 'cart' }" class="btn btn-light"
-              v-if="$store.state.user"
+              v-if="$store.state.user != null"
               ><icon
                 icon="material-symbols:shopping-cart-outline-rounded"
               ></icon>

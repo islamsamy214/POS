@@ -44,12 +44,24 @@
             <button
               type="submit"
               class="btn btn-primary w-sm"
-              v-if="$store.state.user"
+              v-if="$store.state.user && !inCart(product)"
+              @click="addToCart(product)"
             >
               <icon
                 icon="material-symbols:add-shopping-cart-outline-rounded"
               ></icon>
               Add to cart
+            </button>
+            <button
+              type="submit"
+              class="btn btn-default w-sm"
+              v-if="$store.state.user && inCart(product)"
+              @click="removeFromCart(product)"
+            >
+              <icon
+                icon="material-symbols:add-shopping-cart-outline-rounded"
+              ></icon>
+              Remove form cart
             </button>
             <router-link
               :to="{ name: 'products-edit', params: { id: product.id } }"
@@ -82,6 +94,24 @@ import store from "../../../../store/index";
 export default {
   props: ["product"],
   methods: {
+    addToCart(product) {
+      store.commit("addProduct", product);
+    }, //end of addToCart
+
+    removeFromCart(product) {
+      store.commit("removeProduct", product);
+    }, //end of removeFromCart
+
+    inCart(product) {
+      let productInCart = store.state.cart.filter((item) => {
+        return item.id == product.id;
+      });
+      if (productInCart.length >= 1) {
+        return true;
+      }
+      return false;
+    }, //end of inCart
+
     async deleteProduct(productId) {
       try {
         store;

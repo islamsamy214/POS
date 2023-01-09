@@ -32,22 +32,17 @@
                     /><span class="logo-txt">Minia</span>
                   </div>
                 </div>
-                <div class="flex-shrink-0">
-                  <div class="mb-4">
-                    <h4 class="float-end font-size-16">Invoice # 12345</h4>
-                  </div>
-                </div>
               </div>
 
-              <p class="mb-1">abc@123.com</p>
-              <p>012-345-6789</p>
+              <p class="mb-1">{{ user.email }}</p>
+              <p>{{ user.mobile_number }}</p>
             </div>
             <hr class="my-4" />
             <div class="row">
               <div class="col-sm-6">
                 <div>
                   <h5 class="font-size-15 mb-3">Billing To:</h5>
-                  <h5 class="font-size-14 mb-2">Richard Saul</h5>
+                  <h5 class="font-size-14 mb-2">{{ user.full_name }}</h5>
                   <p class="mb-1">1208 Sherwood Circle Lafayette, LA 70506</p>
                 </div>
               </div>
@@ -83,12 +78,12 @@
                   </thead>
                   <tbody>
                     <!-- products -->
-                    <tr v-for="i in 3" :key="i">
-                      <th scope="row">{{ i }}</th>
+                    <tr v-for="product in cart" :key="product.id">
+                      <th scope="row">{{ product.id }}</th>
                       <td>
-                        <h5 class="font-size-15 mb-1">Minia</h5>
+                        <h5 class="font-size-15 mb-1">{{ product.title }}</h5>
                         <p class="font-size-13 text-muted mb-0">
-                          Bootstrap 5 Admin Dashboard
+                          {{ product.sku }}
                         </p>
                       </td>
                       <td class="text-center">
@@ -97,7 +92,11 @@
                           role="group"
                           aria-label="Basic example"
                         >
-                          <button type="button" class="btn btn-primary">
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click="decreaseAmount(product)"
+                          >
                             <icon icon="radix-icons:dash" />
                           </button>
                           <button
@@ -105,35 +104,41 @@
                             class="btn btn-default"
                             disabled
                           >
-                            2
+                            {{ product.amount }}
                           </button>
-                          <button type="button" class="btn btn-primary">
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click="increaseAmount(product)"
+                          >
                             <icon icon="material-symbols:add" />
                           </button>
                         </div>
                       </td>
-                      <td class="text-end">$20</td>
-                      <td class="text-end">$499.00</td>
+                      <td class="text-end">${{ product.price }}</td>
+                      <td class="text-end">
+                        ${{ product.price * product.amount }}
+                      </td>
                     </tr>
                     <!-- end of products -->
                     <tr>
                       <th scope="row" colspan="4" class="text-end">
                         Sub Total
                       </th>
-                      <td class="text-end">$998.00</td>
+                      <td class="text-end">${{ subTotalPrice }}</td>
                     </tr>
                     <tr>
                       <th scope="row" colspan="4" class="border-0 text-end">
                         Tax
                       </th>
-                      <td class="border-0 text-end">$12.00</td>
+                      <td class="border-0 text-end">${{ tax }}</td>
                     </tr>
                     <tr>
                       <th scope="row" colspan="4" class="border-0 text-end">
                         Total
                       </th>
                       <td class="border-0 text-end">
-                        <h4 class="m-0">$1010.00</h4>
+                        <h4 class="m-0">${{ totalPrice }}</h4>
                       </td>
                     </tr>
                   </tbody>
@@ -143,15 +148,19 @@
             <div class="d-print-none mt-3">
               <div class="float-end">
                 <a
+                  v-if="subTotalPrice"
                   href="javascript:window.print()"
                   class="btn btn-success waves-effect waves-light me-1"
                   ><icon icon="material-symbols:print-outline-rounded"></icon
                 ></a>
-                <a
-                  href="#"
+                <button
+                  v-if="subTotalPrice"
+                  @click="createOrder"
                   class="btn btn-primary w-md waves-effect waves-light"
-                  >Send</a
+                  :disabled="loading"
                 >
+                  Send
+                </button>
               </div>
             </div>
           </div>
@@ -161,3 +170,80 @@
     <!-- end row -->
   </div>
 </template>
+<script>
+import store from "../../../store/index";
+export default {
+  data() {
+    return {
+      cart: null,
+      user: null,
+      subTotalPrice: 0,
+      tax: 12,
+      totalPrice: 0,
+      loading: false,
+    };
+  }, //end of data
+
+  methods: {
+    increaseAmount(product) {
+      store.commit("increaseAmount", product);
+      this.calculateThePrices();
+    }, //end of increaseAmount
+
+    decreaseAmount(product) {
+      store.commit("decreaseAmount", product);
+      this.calculateThePrices();
+    }, //end of decreaseAmount
+
+    calculateThePrices() {
+      this.subTotalPrice = 0;
+      for (let product in this.cart) {
+        this.subTotalPrice +=
+          this.cart[product].amount * this.cart[product].price;
+      }
+      this.totalPrice = this.subTotalPrice - this.tax;
+    },
+
+    createOrder() {
+      this.loading = true;
+      let products_ids = [];
+      let amounts = [];
+      for (let product in this.cart) {
+        products_ids.push(this.cart[product].id);
+        amounts.push(this.cart[product].amount);
+      }
+      let formData = new FormData();
+      formData.append("products_ids", JSON.stringify(products_ids));
+      formData.append("products_amounts", JSON.stringify(amounts));
+      axios
+        .post(process.env.VUE_APP_URL + "api/orders", formData, {
+          headers: {
+            Authorization: "Bearer " + store.getters.getToken,
+          },
+        })
+        .then((response) => {
+          store.commit("clearCart");
+          this.$router.push({ name: "home" });
+        })
+        .catch((error) => {
+          if (error.response.status == 401) {
+            this.$router.push({ name: "login" });
+          }
+          if (error.response.status == 403) {
+            this.$router.push({ name: "forbidden" });
+          }
+        })
+        .then(() => {
+          this.loading = false;
+        });
+    }, //end of create order
+  }, //end of methods
+
+  created() {
+    this.cart = store.getters.getCart;
+    this.user = store.getters.getUser;
+    // end of seeding
+    this.calculateThePrices();
+  }, //end of created
+};
+</script>

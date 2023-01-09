@@ -91,7 +91,7 @@
                       <td>
                         <h5 class="font-size-15 mb-1">{{ product.title }}</h5>
                         <p class="font-size-13 text-muted mb-0">
-                          {{ product.details }}
+                          {{ product.sku }}
                         </p>
                       </td>
                       <td class="text-center">

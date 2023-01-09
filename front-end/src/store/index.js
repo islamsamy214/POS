@@ -7,6 +7,7 @@ export default createStore({
   state: {
     user: null,
     token: null,
+    cart: [],
   },
   getters: getters,
   mutations: mutations,

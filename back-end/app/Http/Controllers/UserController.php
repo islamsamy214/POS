@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index()
     {
-        return User::with('roles')->latest()->paginate(12);
+        return User::where('email', '!=', 'super_admin@app.com')->with('roles')->latest()->paginate(12);
     } //end of index
 
 
@@ -53,6 +53,8 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->detachRoles($user->getRoles());
+        $user->brands()->delete();
+        $user->orders()->delete();
         $user->delete();
     } //end of destroy
 

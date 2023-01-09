@@ -18,7 +18,7 @@
             <tbody>
               <tr v-for="order in orders" :key="order.id">
                 <th>{{ order.id }}</th>
-                <td>{{ order.user.full_name }}</td>
+                <th>{{ order.user.full_name }}</th>
                 <td>{{ order.status }}</td>
                 <td class="text-end">
                   <router-link
@@ -27,7 +27,7 @@
                       params: { id: order.id },
                     }"
                     type="button"
-                    class="btn btn-outline-light text-truncate m-1 "
+                    class="btn btn-outline-light text-truncate m-1"
                   >
                     Show
                   </router-link>

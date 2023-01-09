@@ -9,7 +9,6 @@
               <img src="../../assets/images/logo-sm.svg" alt="" height="24" />
             </span>
           </a>
-          
         </div>
 
         <button
@@ -27,16 +26,6 @@
         >
           <icon icon="charm:menu-hamburger"></icon>
         </button>
-
-        <!-- App Search-->
-        <!-- <form class="app-search d-none d-lg-block">
-          <div class="position-relative">
-            <input type="text" class="form-control" placeholder="Search..." />
-            <button class="btn btn-primary" type="button">
-              <i class="bx bx-search-alt align-middle"></i>
-            </button>
-          </div>
-        </form> -->
       </div>
 
       <div class="d-flex">
@@ -115,6 +104,7 @@ export default {
         );
         this.$store.dispatch("logout");
         this.user = "";
+        this.$router.push({ name: "home" });
       } catch (error) {
         if (error.response.status == 401) {
           next({ name: "login" });

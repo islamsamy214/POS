@@ -82,13 +82,6 @@ const routes = [
         },
       }, //end of orders show
       {
-        name: "orders-create",
-        path: "orders/create",
-        component: function () {
-          return import("../pages/users/orders/create/CreatePage.vue");
-        },
-      }, //end of orders create
-      {
         name: "brands",
         path: "brands",
         component: function () {
