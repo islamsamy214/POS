@@ -1,42 +1,49 @@
 <template>
   <div class="row">
-    <div class="col-xl-3 col-sm-6" v-for="(user, index) in users" :key="index">
-      <div class="card text-center">
-        <div class="card-body">
-          <div class="mx-auto mb-4">
-            <img
-              src="../../../assets/images/users/avatar-2.jpg"
-              alt=""
-              class="avatar-xl rounded-circle img-thumbnail"
-            />
-          </div>
-          <h5 class="font-size-16 mb-1">
-            <a href="#" class="text-dark">{{ user.full_name }}</a>
-          </h5>
-          <p class="text-muted mb-2">{{ user.email }}</p>
-        </div>
-
-        <div class="btn-group" role="group">
-          <router-link
-            :to="{
-              name: 'users-edit',
-              params: { id: user.id },
-            }"
-            type="button"
-            class="btn btn-outline-light text-truncate"
-          >
-            Edit
-          </router-link>
-          <button
-            type="button"
-            class="btn btn-outline-light text-truncate"
-            @click="deleteUser(user.id)"
-          >
-            Delete
-          </button>
+    <div class="table-rep-plugin">
+      <div class="table-wrapper">
+        <div
+          class="table-responsive mb-0 fixed-solution"
+          data-pattern="priority-columns"
+        >
+          <table id="tech-companies-1" class="table table-striped display-all">
+            <thead>
+              <tr>
+                <th>Order id</th>
+                <th>Order owener</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in orders" :key="order.id">
+                <th>{{ order.id }}</th>
+                <td>{{ order.user.full_name }}</td>
+                <td>{{ order.status }}</td>
+                <td class="text-end">
+                  <router-link
+                    :to="{
+                      name: 'orders-show',
+                      params: { id: order.id },
+                    }"
+                    type="button"
+                    class="btn btn-outline-light text-truncate m-1 "
+                  >
+                    Show
+                  </router-link>
+                  <button
+                    type="button"
+                    class="btn btn-outline-light text-truncate"
+                    @click="deleteOrder(order.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <!-- end card -->
     </div>
     <!-- end col -->
   </div>
@@ -69,8 +76,8 @@
 <script>
 import store from "../../../store/index";
 export default {
-  props: ["users", "isEmpty", "currentPage", "firstPage", "lastPage"],
-  emits: ["previuosPage", "nextPage", "reloadUsers"],
+  props: ["orders", "isEmpty", "currentPage", "firstPage", "lastPage"],
+  emits: ["previuosPage", "nextPage", "reloadOrders"],
   data() {
     return {
       loading: false,
@@ -85,10 +92,10 @@ export default {
     },
   }, //end of disableNextPage
   methods: {
-    async deleteUser(userId) {
+    async deleteOrder(orderId) {
       try {
         store;
-        await axios.delete(process.env.VUE_APP_URL + "api/users/" + userId, {
+        await axios.delete(process.env.VUE_APP_URL + "api/orders/" + orderId, {
           headers: {
             Authorization: "bearer " + store.getters.getToken,
           },
@@ -102,7 +109,7 @@ export default {
           this.$router.push({ name: "forbidden" });
         }
       }
-    }, //end of delete user
-  },
+    }, //end of delete order
+  }, //end of methods
 };
 </script>

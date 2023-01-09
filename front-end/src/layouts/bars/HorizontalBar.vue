@@ -30,6 +30,28 @@
                 <span>Users</span>
               </router-link>
             </li>
+            <li class="nav-item dropdown">
+              <router-link
+                :to="{ name: 'brands' }"
+                class="nav-link dropdown-toggle arrow-none"
+                id="topnav-dashboard"
+                role="button"
+              >
+                <icon icon="tabler:brand-4chan"></icon>
+                <span>Brands</span>
+              </router-link>
+            </li>
+            <li class="nav-item dropdown">
+              <router-link
+                :to="{ name: 'orders' }"
+                class="nav-link dropdown-toggle arrow-none"
+                id="topnav-dashboard"
+                role="button"
+              >
+                <icon icon="icon-park-outline:order"></icon>
+                <span>Orders</span>
+              </router-link>
+            </li>
           </ul>
         </div>
       </nav>

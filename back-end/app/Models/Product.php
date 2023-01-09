@@ -13,6 +13,8 @@ class Product extends Model
         'title', 'sku', 'details', 'price', 'brand_id', 'user_id'
     ]; //end of fillable
 
+    protected $hidden = ["user_id"];
+
     public function user()
     {
         return $this->belongsTo(User::class);

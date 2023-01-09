@@ -29,7 +29,7 @@ class UpdateProductRequest extends FormRequest
         $brands_ids = $brands->pluck('id');
         return [
             'title' => ['required', 'string', 'max:255'],
-            'sku' => ['required', 'integer', 'digits:8', Rule::unique('brands')->ignore($this->product)],
+            'sku' => ['required', 'integer', 'digits:8', Rule::unique('products')->ignore($this->product)],
             'details' => ['string', 'max:7650'],
             'price' => ['required', 'numeric'],
             'brand_id' => [Rule::in($brands_ids)]

@@ -26,7 +26,8 @@ const routes = [
       }, //end of cart
       {
         name: "products-show",
-        path: "products/:product_sku",
+        path: "products/:id",
+        params: true,
         component: function () {
           return import("../pages/home/products/show/ShowPage.vue");
         },
@@ -40,7 +41,7 @@ const routes = [
       }, //end of products create
       {
         name: "products-edit",
-        path: "products/edit/:product_sku",
+        path: "products/edit/:id",
         component: function () {
           return import("../pages/users/products/edit/EditPage.vue");
         },
@@ -75,7 +76,7 @@ const routes = [
       }, //end of orders
       {
         name: "orders-show",
-        path: "orders/:order",
+        path: "orders/:id",
         component: function () {
           return import("../pages/users/orders/show/ShowPage.vue");
         },
@@ -87,13 +88,6 @@ const routes = [
           return import("../pages/users/orders/create/CreatePage.vue");
         },
       }, //end of orders create
-      {
-        name: "orders-edit",
-        path: "orders/edit/:id",
-        component: function () {
-          return import("../pages/users/orders/edit/EditPage.vue");
-        },
-      }, //end of orders edit
       {
         name: "brands",
         path: "brands",
@@ -110,7 +104,7 @@ const routes = [
       }, //end of brands create
       {
         name: "brands-edit",
-        path: "brands/edit/:title",
+        path: "brands/edit/:id",
         component: function () {
           return import("../pages/users/brands/edit/EditPage.vue");
         },

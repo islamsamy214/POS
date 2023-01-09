@@ -5,7 +5,6 @@ export default {
   }, //end of login
 
   register({ commit }, payload) {
-    console.log(payload);
     commit("storeInLocalStorage", payload);
     commit("storeInPage", payload);
   }, //end of register

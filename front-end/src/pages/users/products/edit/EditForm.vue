@@ -1,11 +1,11 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <h4 class="card-title">Edit new user</h4>
+      <h4 class="card-title">Edit new product</h4>
     </div>
-    <form class="card-body p-4" @submit.prevent="submitUser">
+    <form class="card-body p-4" @submit.prevent="submitProduct">
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
           <div class="mb-3" v-if="form.message">
             <div class="d-block text-primary mt-4">
               {{ form.message }}
@@ -13,106 +13,93 @@
           </div>
           <div>
             <div class="mb-3">
-              <label for="full-name" class="form-label">Full name</label>
+              <label for="title" class="form-label">Title</label>
               <input
                 class="form-control"
                 type="text"
                 placeholder="Artisanal kale"
-                id="full-name"
-                v-model="form.full_name"
+                id="title"
+                v-model="form.title"
               />
               <small
                 class="text-danger mt-4"
-                v-if="form.errors && form.errors.full_name"
+                v-if="form.errors && form.errors.title"
               >
-                {{ form.errors.full_name[0] }}
+                {{ form.errors.title[0] }}
               </small>
             </div>
 
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
+              <label for="sku" class="form-label">Product sku</label>
               <input
                 class="form-control"
-                type="email"
-                placeholder="bootstrap@example.com"
-                id="email"
-                v-model="form.email"
+                type="number"
+                placeholder="should be 8 numbers!!"
+                id="sku"
+                v-model="form.sku"
               />
               <small
                 class="text-danger mt-4"
-                v-if="form.errors && form.errors.email"
+                v-if="form.errors && form.errors.sku"
               >
-                {{ form.errors.email[0] }}</small
-              >
-            </div>
-            <div class="mb-3">
-              <label for="tel" class="form-label">Mobile number</label>
-              <input
-                class="form-control"
-                type="tel"
-                placeholder="20123456789"
-                id="tel"
-                v-model="form.mobile_number"
-              />
-              <small
-                class="text-danger mt-4"
-                v-if="form.errors && form.errors.mobile_number"
-              >
-                {{ form.errors.mobile_number[0] }}</small
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="mt-3 mt-lg-0">
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input
-                class="form-control"
-                type="password"
-                id="password"
-                v-model="form.password"
-              />
-              <small
-                class="text-danger mt-4"
-                v-if="form.errors && form.errors.password"
-              >
-                {{ form.errors.password[0] }}</small
-              >
-            </div>
-            <div class="mb-3">
-              <label for="password-confirmation" class="form-label"
-                >Password confirmation</label
-              >
-              <input
-                class="form-control"
-                type="password"
-                id="password-confirmation"
-                v-model="form.password_confirmation"
-              />
-              <small
-                class="text-danger mt-4"
-                v-if="form.errors && form.errors.password"
-              >
-                {{ form.errors.password[0] }}</small
-              >
+                {{ form.errors.sku[0] }}
+              </small>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Role</label>
-              <select class="form-select" v-model="form.role">
+              <label for="price" class="form-label">Product price</label>
+              <input
+                class="form-control"
+                type="number"
+                placeholder="$$$$"
+                id="price"
+                v-model="form.price"
+              />
+              <small
+                class="text-danger mt-4"
+                v-if="form.errors && form.errors.price"
+              >
+                {{ form.errors.price[0] }}
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <label for="details" class="form-label">Details</label>
+              <textarea
+                class="form-control"
+                type="text"
+                id="details"
+                v-model="form.details"
+                style="min-height: 300px"
+              ></textarea>
+              <small
+                class="text-danger mt-4"
+                v-if="form.errors && form.errors.details"
+              >
+                {{ form.errors.details[0] }}
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Brand</label>
+              <select class="form-select" v-model="form.brand_id">
                 <option>Select</option>
-                <option value="client">Client</option>
-                <option value="admin">Admin</option>
+                <option
+                  :value="brand.id"
+                  v-for="brand in brands"
+                  :key="brand.id"
+                >
+                  {{ brand.title }}
+                </option>
               </select>
               <small
                 class="text-danger mt-4"
-                v-if="form.errors && form.errors.role"
+                v-if="form.errors && form.errors.brand_id"
               >
-                {{ form.errors.role[0] }}</small
+                {{ form.errors.brand_id[0] }}</small
               >
             </div>
+
             <div class="mb-3 d-flex justify-content-end">
               <button
                 type="submit"
@@ -132,18 +119,17 @@
 <script>
 import store from "../../../../store/index";
 export default {
-  props: ["user"],
+  props: ["product","brands"],
 
   data() {
     return {
       loading: false,
       form: {
-        full_name: this.user.full_name,
-        email: this.user.email,
-        mobile_number: this.user.mobile_number,
-        password: "",
-        password_confirmation: "",
-        role: this.user.role[0],
+        title: this.product.title,
+        details: this.product.details,
+        sku: this.product.sku,
+        price: this.product.price,
+        brand_id: this.product.brand_id,
         errors: null,
         message: null,
       },
@@ -160,13 +146,13 @@ export default {
       formData.append("_method", "PUT");
       return formData;
     }, //end of generateFormData
-    submitUser() {
+    submitProduct() {
       this.form.errors = null;
       this.form.message = null;
       this.loading = true;
       axios
         .post(
-          process.env.VUE_APP_URL + "api/users/" + this.user.id,
+          process.env.VUE_APP_URL + "api/products/" + this.product.id,
           this.generateFormData(),
           {
             headers: {
@@ -175,7 +161,7 @@ export default {
           }
         )
         .then((response) => {
-          this.$router.push({ name: "users" });
+          this.$router.push({ name: "home" });
         })
         .catch((error) => {
           if (error.response.status == 401) {

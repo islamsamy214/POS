@@ -16,7 +16,7 @@ class BrandController extends Controller
 
     public function index()
     {
-        return Brand::latest()->get();
+        return Brand::withCount('products')->latest()->paginate(5);
     } //end of index
 
 

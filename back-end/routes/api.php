@@ -21,6 +21,6 @@ use App\Http\Controllers\ProductController;
 require __DIR__ . '/auth.php';
 Route::resource('users', UserController::class)->except('show');
 Route::resource('brands', BrandController::class)->except(['create', 'show']);
-Route::resource('products', ProductController::class)->except('show');
+Route::resource('products', ProductController::class);
 Route::resource('orders', OrderController::class)->except('create');
 Route::put('change-order-status/{order}', [OrderController::class, 'changeOrderStatus']);

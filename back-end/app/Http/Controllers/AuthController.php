@@ -30,6 +30,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+        $user->role = $user->getRoles();
         return response()->json([
             'status' => 'success',
             'user' => $user,
@@ -52,6 +53,7 @@ class AuthController extends Controller
         $user->attachRole('client');
 
         $token = Auth::login($user);
+        $user->role = $user->getRoles();
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
@@ -76,9 +78,11 @@ class AuthController extends Controller
 
     public function refresh()
     {
+        $user = Auth::user();
+        $user->role = $user->getRoles();
         return response()->json([
             'status' => 'success',
-            'user' => Auth::user(),
+            'user' => $user,
             'authorisation' => [
                 'token' => Auth::refresh(),
                 'type' => 'bearer',
@@ -89,6 +93,8 @@ class AuthController extends Controller
 
     public function getUser()
     {
-        return auth()->user();
+        $user = Auth::user();
+        $user->role = $user->getRoles();
+        return $user;
     } //end of getUser
 }

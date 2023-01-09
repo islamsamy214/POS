@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
@@ -14,13 +13,13 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware(['auth:api']);
-        $this->middleware(['role:admin'])->only(['index', 'changeOrderStatus']);
+        $this->middleware(['role:admin'])->only(['index', 'update', 'changeOrderStatus']);
     } //end of constructor
 
 
     public function index()
     {
-        return Order::latest()->paginate(10);
+        return Order::withCount('products')->with('user')->latest()->paginate(10);
     } //end of index
 
 
@@ -41,6 +40,8 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
+        $order->products = $order->products;
+        $order->user = $order->user;
         return $order;
     } //end of show
 
@@ -55,6 +56,7 @@ class OrderController extends Controller
     {
         DB::beginTransaction();
         try {
+            $order->update($request->all());
             $products = array_combine($request->products_ids, $request->products_amounts);
             $order->products()->sync($products);
             return response()->json(['success', 200]);

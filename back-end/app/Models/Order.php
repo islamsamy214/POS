@@ -13,6 +13,8 @@ class Order extends Model
         'user_id', 'status'
     ]; //end of fillable
 
+    protected $hidden = ["user_id"];
+
     public function user()
     {
         return $this->belongsTo(User::class);

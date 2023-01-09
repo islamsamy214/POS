@@ -1,42 +1,49 @@
 <template>
   <div class="row">
-    <div class="col-xl-3 col-sm-6" v-for="(user, index) in users" :key="index">
-      <div class="card text-center">
-        <div class="card-body">
-          <div class="mx-auto mb-4">
-            <img
-              src="../../../assets/images/users/avatar-2.jpg"
-              alt=""
-              class="avatar-xl rounded-circle img-thumbnail"
-            />
-          </div>
-          <h5 class="font-size-16 mb-1">
-            <a href="#" class="text-dark">{{ user.full_name }}</a>
-          </h5>
-          <p class="text-muted mb-2">{{ user.email }}</p>
-        </div>
-
-        <div class="btn-group" role="group">
-          <router-link
-            :to="{
-              name: 'users-edit',
-              params: { id: user.id },
-            }"
-            type="button"
-            class="btn btn-outline-light text-truncate"
-          >
-            Edit
-          </router-link>
-          <button
-            type="button"
-            class="btn btn-outline-light text-truncate"
-            @click="deleteUser(user.id)"
-          >
-            Delete
-          </button>
+    <div class="table-rep-plugin">
+      <div class="table-wrapper">
+        <div
+          class="table-responsive mb-0 fixed-solution"
+          data-pattern="priority-columns"
+        >
+          <table id="tech-companies-1" class="table table-striped display-all">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th style="width: 25rem">Description</th>
+                <th>Products</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="brand in brands" :key="brand.id">
+                <th>{{ brand.title }}</th>
+                <td>{{ brand.description }}</td>
+                <td>{{ brand.products_count }}</td>
+                <td>
+                  <router-link
+                    :to="{
+                      name: 'brands-edit',
+                      params: { id: brand.id },
+                    }"
+                    type="button"
+                    class="btn btn-outline-light text-truncate my-1"
+                  >
+                    Edit
+                  </router-link>
+                  <button
+                    type="button"
+                    class="btn btn-outline-light text-truncate"
+                    @click="deleteBrand(brand.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <!-- end card -->
     </div>
     <!-- end col -->
   </div>
@@ -69,8 +76,8 @@
 <script>
 import store from "../../../store/index";
 export default {
-  props: ["users", "isEmpty", "currentPage", "firstPage", "lastPage"],
-  emits: ["previuosPage", "nextPage", "reloadUsers"],
+  props: ["brands", "isEmpty", "currentPage", "firstPage", "lastPage"],
+  emits: ["previuosPage", "nextPage", "reloadBrands"],
   data() {
     return {
       loading: false,
@@ -85,10 +92,10 @@ export default {
     },
   }, //end of disableNextPage
   methods: {
-    async deleteUser(userId) {
+    async deleteBrand(brandId) {
       try {
         store;
-        await axios.delete(process.env.VUE_APP_URL + "api/users/" + userId, {
+        await axios.delete(process.env.VUE_APP_URL + "api/brands/" + brandId, {
           headers: {
             Authorization: "bearer " + store.getters.getToken,
           },
@@ -102,7 +109,7 @@ export default {
           this.$router.push({ name: "forbidden" });
         }
       }
-    }, //end of delete user
-  },
+    }, //end of delete brand
+  }, //end of methods
 };
 </script>

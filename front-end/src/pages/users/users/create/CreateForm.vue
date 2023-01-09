@@ -172,10 +172,12 @@ export default {
         })
         .catch((error) => {
           if (error.response.status == 401) {
-            this.form.message = error.response.data.message;
-          } else {
-            this.form.errors = error.response.data.errors;
+            this.$router.push({ name: "login" });
           }
+          if (error.response.status == 403) {
+            this.$router.push({ name: "forbidden" });
+          }
+          this.form.errors = error.response.data.errors;
         })
         .then(() => {
           this.loading = false;

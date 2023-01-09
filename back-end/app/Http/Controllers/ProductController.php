@@ -11,13 +11,13 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api', 'role:admin'])->except('index');
+        $this->middleware(['auth:api', 'role:admin'])->except(['index', 'show']);
     } //end of constructor
 
 
     public function index()
     {
-        return Product::latest()->paginate(10);
+        return Product::latest()->paginate(9);
     } //end of index
 
 
@@ -33,6 +33,14 @@ class ProductController extends Controller
         Product::create($request->all());
         return response()->json('success', 200);
     } //end of store
+
+
+    public function show(Product $product)
+    {
+        $product->brand = $product->brand;
+        $product->user = $product->user;
+        return $product;
+    } //end of show
 
 
     public function edit(Product $product)

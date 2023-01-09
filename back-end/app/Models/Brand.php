@@ -13,6 +13,8 @@ class Brand extends Model
         'title', 'description', 'user_id'
     ]; //end of fillable
 
+    protected $hidden = ["user_id"];
+
     public function user()
     {
         return $this->belongsTo(User::class);

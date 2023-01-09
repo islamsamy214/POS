@@ -1,6 +1,10 @@
 <template>
   <div class="row">
-    <div class="col-xl-4 col-sm-6" v-for="i in 9" :key="i">
+    <div
+      class="col-xl-4 col-sm-6"
+      v-for="product in products"
+      :key="product.id"
+    >
       <div class="card">
         <div class="">
           <img
@@ -10,19 +14,25 @@
           />
         </div>
         <div class="card-body">
-          <p class="text-muted mb-2">10 Apr, 2022</p>
+          <p class="text-muted mb-2">${{ product.price }}</p>
           <h5 class="">
-            <a href="#" class="text-dark">Beautiful Day with Friends</a>
+            <router-link
+              :to="{
+                name: 'products-show',
+                params: { product_sku: product.sku, id: product.id },
+              }"
+              class="text-dark"
+              >{{ product.title }}</router-link
+            >
           </h5>
           <p class="mb-0 font-size-15">
-            Contrary to popular belief, Lorem Ipsum is not simply random text,a
-            Latin professor at Hampden-Sydney College in Virginia.
+            {{ product.details }}
           </p>
           <div class="mt-3 row">
             <router-link
               :to="{
                 name: 'products-show',
-                params: { product_sku: 'lorem' },
+                params: { id: product.id },
               }"
               class="align-middle font-size-15 col"
               >Read more
@@ -38,6 +48,7 @@
                 text-end text-decoration-none
                 p-0
               "
+              v-if="$store.state.user"
             >
               <icon
                 icon="material-symbols:add-shopping-cart-outline-rounded"
@@ -53,34 +64,22 @@
   </div>
   <!-- end row -->
 
-  <div class="row justify-content-center mb-4">
-    <div class="col-md-3">
-      <div class="">
+  <div class="row g-0 align-items-center mb-4">
+    <div class="col-sm-12">
+      <div class="float-sm-end">
         <ul class="pagination mb-sm-0">
-          <li class="page-item disabled">
-            <a href="#" class="page-link">
+          <li class="page-item" :class="disablePreviousPage">
+            <button class="page-link" @click="$emit('previuosPage')">
               <icon icon="material-symbols:chevron-left-rounded"></icon>
-            </a>
+            </button>
           </li>
           <li class="page-item">
-            <a href="#" class="page-link">1</a>
+            <button class="page-link" disabled>{{ currentPage }}</button>
           </li>
-          <li class="page-item active">
-            <a href="#" class="page-link">2</a>
-          </li>
-          <li class="page-item">
-            <a href="#" class="page-link">3</a>
-          </li>
-          <li class="page-item">
-            <a href="#" class="page-link">4</a>
-          </li>
-          <li class="page-item">
-            <a href="#" class="page-link">5</a>
-          </li>
-          <li class="page-item">
-            <a href="#" class="page-link">
+          <li class="page-item" :class="disableNextPage">
+            <button class="page-link" @click="$emit('nextPage')">
               <icon icon="material-symbols:chevron-right-rounded"></icon>
-            </a>
+            </button>
           </li>
         </ul>
       </div>
@@ -88,3 +87,24 @@
   </div>
   <!-- end row -->
 </template>
+
+<script>
+import store from "../../../store/index";
+export default {
+  props: ["products", "isEmpty", "currentPage", "firstPage", "lastPage"],
+  emits: ["previuosPage", "nextPage", "reloadProducts"],
+  data() {
+    return {
+      loading: false,
+    };
+  }, //end of data
+  computed: {
+    disablePreviousPage() {
+      return { disabled: this.firstPage == this.currentPage };
+    },
+    disableNextPage() {
+      return { disabled: this.lastPage == this.currentPage };
+    },
+  }, //end of disableNextPage
+};
+</script>
