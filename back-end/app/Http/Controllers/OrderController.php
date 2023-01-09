@@ -29,17 +29,23 @@ class OrderController extends Controller
             $order = Order::create(['user_id' => auth()->id()]);
             $products_ids = json_decode($request->products_ids);
             $products_amounts = json_decode($request->products_amounts);
-            $products = [];
-            foreach ($products_ids as $index => $product) {
-                $products[$product] = ['amount' => $products_amounts[$index]];
-            }
-            $order->products()->sync($products);
-            return response()->json(['success', 200]);
+            $order->products()->sync($this->productCompine($products_ids, $products_amounts));
+            return response()->json(['success']);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['error']);
         }
     } //end of store
+
+
+    public function productCompine($products_ids, $products_amounts)
+    {
+        $products = [];
+        foreach ($products_ids as $index => $product) {
+            $products[$product] = ['amount' => $products_amounts[$index]];
+        }
+        return $products;
+    } //end of productsCompine
 
 
     public function show(Order $order)
@@ -60,13 +66,13 @@ class OrderController extends Controller
     {
         $order->products()->detach();
         $order->delete();
-        return response()->json(['success', 200]);
+        return response()->json(['success'], 200);
     } //end of destroy
 
 
     public function changeOrderStatus(UpdateOrderStatusRequest $request, Order $order)
     {
         $order->update($request->all());
-        return response()->json(['success', 200]);
+        return response()->json(['success'], 200);
     } //end of changeOrderStatus
 }

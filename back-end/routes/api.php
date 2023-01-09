@@ -22,5 +22,5 @@ require __DIR__ . '/auth.php';
 Route::resource('users', UserController::class)->except('show');
 Route::resource('brands', BrandController::class)->except(['create', 'show']);
 Route::resource('products', ProductController::class);
-Route::resource('orders', OrderController::class)->except(['create','update']);
-Route::put('change-order-status/{order}', [OrderController::class, 'changeOrderStatus']);
+Route::resource('orders', OrderController::class)->except(['create', 'update']);
+Route::put('change-order-status/{order}', [OrderController::class, 'changeOrderStatus'])->name('orders.update.status');

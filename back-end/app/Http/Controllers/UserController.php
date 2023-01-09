@@ -37,7 +37,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $user->role = $user->getRoles();
+        $user->roles = $user->getRoles();
         return $user;
     } //end of edit
 
@@ -56,6 +56,7 @@ class UserController extends Controller
         $user->brands()->delete();
         $user->orders()->delete();
         $user->delete();
+        return response()->json('success', 200);
     } //end of destroy
 
 
